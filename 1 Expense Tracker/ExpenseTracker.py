@@ -10,3 +10,15 @@ Basic Functionality
 3. Edit and delete expenses
 4. Calculate statistics
 '''
+
+def display_menu():
+    print("Options")
+    print("-------")
+    print("[1] Add new expense")
+    print("[2] View all expenses")
+    print("[3] Edit expense")
+    print("[4] Delete expense(s)")
+    print("[5] View statistics of expenses")
+    print("[0] Exit")
+
+display_menu()
