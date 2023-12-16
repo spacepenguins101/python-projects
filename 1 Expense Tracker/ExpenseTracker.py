@@ -1,7 +1,7 @@
 '''
 Project Aim
 -----------
-This project seeks to help people track their expenses better and faster.
+This project seeks to help people track their expenses.
 
 Basic Functionality
 -------------------
@@ -12,6 +12,10 @@ Basic Functionality
 '''
 #Modules
 import sqlite3
+
+#Variables
+login_attempts = 3
+login_successful = False
 
 #Functions
 def display_menu():
@@ -24,29 +28,48 @@ def display_menu():
     print("[5] View statistics of expenses")
     print("[0] Exit")
 
-#Database Intialisation
+def user_register():
+    name = input("Enter your first name: ")
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+    return name, username, password
 
-#Connect to database
-conn = sqlite3.connect('users.db')
+def insert_account(name, username, password):
+    #Connect to database
+    users_conn = sqlite3.connect('users.db')
 
-#Create cursor
-cr = conn.cursor()
+    #Create cursor
+    cr = users_conn.cursor()
 
-#Create a table
-cr.execute("""
-    CREATE TABLE users (
-           first_name text,
-           last_name text,
-           username text,
-           password text
-    )
-""")
+    #Insert values into table
+    cr.execute("INSERT INTO users (name, username, password) VALUES (?, ?, ?, ?)", (name, username, password))
+    
+    #Commit our connection
+    users_conn.commit()
 
-#Commit our connection
-conn.commit()
+    #Close Connection
+    users_conn.close()
 
-#Close Connection
-conn.close()
+def get_accounts():
+    #Connect to database
+    users_conn = sqlite3.connect('users.db')
+
+    #Create cursor
+    cr = users_conn.cursor()
+    
+    #Get the users.
+    cr.execute("SELECT * FROM users")
+    accounts_list = cr.fetchall()
+    
+    #Commit our connection
+    users_conn.commit()
+
+    #Close Connection
+    users_conn.close()
+
+    return accounts_list
 
 #Main Program
 display_menu()
+
+
