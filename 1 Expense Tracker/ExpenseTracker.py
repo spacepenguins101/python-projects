@@ -42,7 +42,7 @@ def insert_account(name, username, password):
     cr = users_conn.cursor()
 
     #Insert values into table
-    cr.execute("INSERT INTO users (name, username, password) VALUES (?, ?, ?, ?)", (name, username, password))
+    cr.execute("INSERT INTO accounts (name, username, password) VALUES (?, ?, ?)", (name, username, password))
     
     #Commit our connection
     users_conn.commit()
@@ -58,7 +58,7 @@ def get_accounts():
     cr = users_conn.cursor()
     
     #Get the users.
-    cr.execute("SELECT * FROM users")
+    cr.execute("SELECT * FROM accounts")
     accounts_list = cr.fetchall()
     
     #Commit our connection
@@ -70,6 +70,26 @@ def get_accounts():
     return accounts_list
 
 #Main Program
-display_menu()
+new_user = input("Are you a new user: ")
 
+if new_user == "Y":
+    name, username, password = user_register()
+    insert_account(name, username, password)
+    accounts = get_accounts()
+else:
+    while login_attempts != 0 and login_successful == False:
+        uname = input("Username: ")
+        passwd = input("Password: ")
 
+        accounts = get_accounts()
+
+        print(accounts)
+        for acc in accounts:
+            if uname == acc[1] and passwd == acc[2]:
+                print("Login successful!")
+                login_successful = True
+                break
+        
+        login_attempts -= 1
+        if not login_successful and login_attempts != 0:
+            print("Wrong credentials. Attempts remaining:", login_attempts)
