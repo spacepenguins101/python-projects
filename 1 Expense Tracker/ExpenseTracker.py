@@ -16,6 +16,7 @@ import sqlite3
 #Variables
 login_attempts = 3
 login_successful = False
+current_user = []
 
 #Functions
 def display_menu():
@@ -27,6 +28,13 @@ def display_menu():
     print("[4] Delete expense(s)")
     print("[5] View statistics of expenses")
     print("[0] Exit")
+
+def display_login_options():
+    print("\nAccount Actions")
+    print("---------------")
+    print("[1] Register")
+    print("[2] Login")
+    print("[3] Change Password")
 
 def user_register():
     name = input("Enter your first name: ")
@@ -69,27 +77,76 @@ def get_accounts():
 
     return accounts_list
 
+def update_account(username, new_password):
+    #Connect to database
+    users_conn = sqlite3.connect('users.db')
+
+    #Create cursor
+    cr = users_conn.cursor()
+    
+    #Update user information
+    cr.execute("""
+               UPDATE accounts
+               SET password = (?)
+               WHERE username = (?)
+               """, (new_password, username))
+    
+    cr.execute("SELECT * FROM accounts")
+    
+    #Get the user account information.
+    accounts_list = cr.fetchall()
+    
+    #Commit our connection
+    users_conn.commit()
+
+    #Close Connection
+    users_conn.close()
+
+    return accounts_list
 #Main Program
-new_user = input("Are you a new user: ")
 
-if new_user == "Y":
-    name, username, password = user_register()
-    insert_account(name, username, password)
-    accounts = get_accounts()
-else:
-    while login_attempts != 0 and login_successful == False:
-        uname = input("Username: ")
-        passwd = input("Password: ")
+#Register / Login functionality
+while not login_successful:
+    display_login_options()
+    acc_option = input("\nAccount option: ")
 
+    if acc_option == "1":
+        name, username, password = user_register()
+        insert_account(name, username, password)
         accounts = get_accounts()
+    elif acc_option == "2":
+        while login_attempts != 0 and login_successful == False:
+            uname = input("Username: ")
+            passwd = input("Password: ")
 
-        print(accounts)
-        for acc in accounts:
-            if uname == acc[1] and passwd == acc[2]:
-                print("Login successful!")
-                login_successful = True
-                break
-        
-        login_attempts -= 1
-        if not login_successful and login_attempts != 0:
-            print("Wrong credentials. Attempts remaining:", login_attempts)
+            accounts = get_accounts()
+
+            for acc in accounts:
+                if uname == acc[1] and passwd == acc[2]:
+                    print("Login successful!")
+                    login_successful = True
+                    for i in range(3):
+                        current_user.append(acc[i])
+                    break
+            
+            login_attempts -= 1
+            if not login_successful and login_attempts != 0:
+                print("Wrong credentials. Attempts remaining:", login_attempts)
+            elif not login_successful and login_attempts == 0:
+                print("Seems like you have trouble logging in. Please create a new account or change your password.")
+
+        login_attempts = 3
+
+    elif acc_option == "3":
+        user = input("Enter username: ")
+        new_password = input("Enter new password: ")
+        new_password2 = input("Re-enter password to confirm: ")
+
+        if new_password == new_password2:  
+            acc_list = update_account(user, new_password)
+            print(acc_list)
+        else:
+            print("Different passwords detected. Please try again.")
+
+print("\nWelcome, " + current_user[0] + "!")
+    
