@@ -35,6 +35,7 @@ def display_login_options():
     print("[1] Register")
     print("[2] Login")
     print("[3] Change Password")
+    print("[0] Exit")
 
 def user_register():
     name = input("Enter your first name: ")
@@ -147,6 +148,13 @@ while not login_successful:
             print(acc_list)
         else:
             print("Different passwords detected. Please try again.")
-
-print("\nWelcome, " + current_user[0] + "!")
     
+    else:
+        confirm_exit = input("Confirm exit (Y or N): ")
+
+        if confirm_exit == "Y": break
+
+if login_successful: 
+    print("\nWelcome, " + current_user[0] + "!")
+    print()
+    display_menu()    
