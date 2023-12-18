@@ -37,10 +37,23 @@ def display_login_options():
     print("[3] Change Password")
     print("[0] Exit")
 
-def user_register():
+def user_register(accounts):
+    valid_user = False
+    usernames = [user[1] for user in accounts]
+
     name = input("Enter your first name: ")
-    username = input("Enter your username: ")
+
+    while not valid_user:
+        username = input("Enter your username: ")
+        is_taken = username in usernames
+
+        if is_taken:
+            print(f"{username} is already taken. Please try again.")
+        else:
+            valid_user = True
+
     password = input("Enter your password: ")
+
     return name, username, password
 
 def insert_account(name, username, password):
@@ -112,9 +125,11 @@ while not login_successful:
     acc_option = input("\nAccount option: ")
 
     if acc_option == "1":
-        name, username, password = user_register()
-        insert_account(name, username, password)
         accounts = get_accounts()
+        name, username, password = user_register(accounts)
+
+        insert_account(name, username, password)
+        
     elif acc_option == "2":
         while login_attempts != 0 and login_successful == False:
             uname = input("Username: ")
@@ -155,6 +170,6 @@ while not login_successful:
         if confirm_exit == "Y": break
 
 if login_successful: 
-    print("\nWelcome, " + current_user[0] + "!")
+    print("\nWelcome back, " + current_user[0] + "!")
     print()
     display_menu()    
