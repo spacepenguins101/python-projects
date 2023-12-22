@@ -1,5 +1,9 @@
+# Modules
+from pathlib import Path
+
 # Variables
 user_input = None
+DOWNLOAD = Path.home() / 'Downloads'
 
 # Functions
 def display_menu():
@@ -13,3 +17,13 @@ def display_menu():
 while user_input != "0":
     display_menu()
     user_input = input("\nEnter you option: ")
+
+    match user_input:
+        case "1":
+            print(DOWNLOAD)
+        case "2":
+            print("You chose option 2.")
+        case "0":
+            break
+        case _:
+            print("Invalid option! Please enter your option again!")
