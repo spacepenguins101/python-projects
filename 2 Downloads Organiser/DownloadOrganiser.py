@@ -1,6 +1,7 @@
 # Modules
 import os
 import magic
+import shutil
 
 # Variables
 user_input = None
@@ -69,7 +70,12 @@ def organise_folder():
     for root, directories, files in os.walk(download):
         for directory in directories:
             directory_path = os.path.join(root, directory)
-            print(f"Found folder: {directory_path}")
+            folder_of_folders = os.path.join(root, "Folders")
+            
+            if os.path.isdir(folder_of_folders):
+                shutil.move(directory_path, folder_of_folders)
+            else:
+                os.mkdir(folder_of_folders)
 
         for file in files:
             file_path = os.path.join(root, file)
@@ -78,13 +84,19 @@ def organise_folder():
 
             for mimetype, description in mime_types.items():
                 if filetype == mimetype:
-                    folder_name = description
+                    folder_path = os.path.join(root, description)
                     break
             if filetype == "inode/blockdevice":
                 filename, file_extension = os.path.splitext(file)
                 for extension, description2 in secondary_extensions.items():
                     if file_extension == extension:
-                        folder_name = description2
+                        folder_path = os.path.join(root, description2)
+                        break
+
+            if os.path.isdir(folder_path):
+                print("Folder exists.")
+            else:
+                print("Folder doesn't exists.")
             
             print(f"File name: {file}, File type: {filetype}, Folder name: {folder_name}")
 
