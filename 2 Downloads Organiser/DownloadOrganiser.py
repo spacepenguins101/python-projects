@@ -6,54 +6,56 @@ import shutil
 # Variables
 user_input = None
 download = os.path.expanduser('~/Downloads')
-mime_types = {
-    "text/plain": "General Text Files",
-    "text/html": "Web Pages",
-    "text/css": "Style Sheets",
-    "text/javascript": "JavaScript Code",
-    "application/json": "JSON Data Files",
-    "application/xml": "XML Data Files",
-    "application/msword": "Microsoft Word Documents",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "Word Documents",
-    "application/vnd.ms-excel": "Microsoft Excel Spreadsheets",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "Excel Spreadsheets",
-    "application/vnd.ms-powerpoint": "Microsoft PowerPoint Presentations",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation": "PowerPoint Presentations",
-    "application/pdf": "Portable Document Format (PDF)",
-    "image/jpeg": "JPEG Images",
-    "image/png": "Portable Network Graphics (PNG)",
-    "image/gif": "Graphics Interchange Format (GIF)",
-    "image/bmp": "Bitmap Images",
-    "image/tiff": "Tagged Image File Format (TIFF)",
-    "image/webp": "WebP Image File (WEBP)",
-    "audio/mpeg": "MP3 Audio Files",
-    "audio/wav": "Waveform Audio Files (WAV)",
-    "audio/ogg": "Ogg Vorbis Audio Files",
-    "audio/flac": "Free Lossless Audio Codec (FLAC)",
-    "video/mp4": "MPEG-4 Video Files (MP4)",
-    "video/webm": "WebM Video Files",
-    "video/ogg": "Ogg Theora Video Files",
-    "video/avi": "Audio Video Interleave (AVI)",
-    "application/zip": "ZIP Archives",
-    "application/x-rar-compressed": "RAR Archives",
-    "application/gzip": "Gzip Compressed Files",
-    "application/x-tar": "Tar Archives",
-    "application/x-msdownload": "Windows Executables",
-    "application/java-archive": "Java Archive Files (JAR)",
-    "application/octet-stream": "Generic Binary Data",
-    "application/x-dosexec": "Windows Executable Files",
-    "message/rfc822": "Email Messages",
-    "multipart/form-data": "Web Form Data"
-}
+
 
 # Feel free to add on to the extensions should the folder assignment not work.
 # Since the MIME type 'inode/blockdevice' does not specifically state what the file is, 
 # we need to make use of this secondary extensions to determine what they are.
-secondary_extensions = {
+extensions = {
     ".zip": "ZIP Archive (Compressed Files and Folders)",
     ".ova": "Open Virtual Appliance (Virtual Machine Template)",
     ".mp4": "MPEG-4 Video File (Common Video Format)",
     ".iso": "Disk Image File (CD/DVD Backup or Installation Media)",
+    ".txt": "General Text Files",
+    ".html": "Web Pages",
+    ".css": "Style Sheets",
+    ".csv": "Comma-Separated Values (CSV) Files",
+    ".js": "JavaScript Code",
+    ".json": "JSON Data Files",
+    ".xml": "XML Data Files",
+    ".doc": "Microsoft Word Documents",
+    ".docx": "Word Documents",
+    ".xlsm": "Microsoft Excel Macro-Enabled Spreadsheets",
+    ".xlsx": "Microsoft Excel Spreadsheets",
+    ".xls": "Microsoft Excel 97-2003 Worksheet",
+    ".ppt": "Microsoft PowerPoint Presentations",
+    ".pptx": "PowerPoint Presentations",
+    ".pdf": "Portable Document Format (PDF)",
+    ".jpg": "JPEG Images",
+    ".jpeg": "JPEG Images",
+    ".png": "Portable Network Graphics (PNG)",
+    ".gif": "Graphics Interchange Format (GIF)",
+    ".bmp": "Bitmap Images",
+    ".tiff": "Tagged Image File Format (TIFF)",
+    ".webp": "WebP Image File (WEBP)",
+    ".mp3": "MP3 Audio Files",
+    ".wav": "Waveform Audio Files (WAV)",
+    ".ogg": "Ogg Vorbis Audio Files",
+    ".flac": "Free Lossless Audio Codec (FLAC)",
+    ".webm": "WebM Video Files",
+    ".ogv": "Ogg Theora Video Files",
+    ".avi": "Audio Video Interleave (AVI)",
+    ".rar": "RAR Archives",
+    ".gz": "Gzip Compressed Files",
+    ".tar": "Tar Archives",
+    ".exe": "Windows Executables",
+    ".jar": "Java Archive Files (JAR)",
+    ".bin": "Generic Binary Data",
+    ".msi": "Windows Installer Package",
+    ".crt": "Certificate Files",
+    ".pem": "Certificate Files",
+    ".ovpn": "OpenVPN Files",
+    ".eml": "Email Messages",
 }
 
 # Functions
@@ -80,25 +82,21 @@ def organise_folder():
         for file in files:
             file_path = os.path.join(root, file)
             folder_name = "No format found"
-            filetype = mime_format.from_file(file_path)
 
-            for mimetype, description in mime_types.items():
-                if filetype == mimetype:
+            filename, file_extension = os.path.splitext(file)
+            for extension, description in extensions.items():
+                if file_extension == extension:
                     folder_path = os.path.join(root, description)
+                    folder_name = description
                     break
-            if filetype == "inode/blockdevice":
-                filename, file_extension = os.path.splitext(file)
-                for extension, description2 in secondary_extensions.items():
-                    if file_extension == extension:
-                        folder_path = os.path.join(root, description2)
-                        break
-
-            if os.path.isdir(folder_path):
-                print("Folder exists.")
-            else:
-                print("Folder doesn't exists.")
             
-            print(f"File name: {file}, File type: {filetype}, Folder name: {folder_name}")
+            '''
+            if os.path.isdir(folder_path):
+                shutil.move(file_path, folder_path)
+            else:
+                os.mkdir(folder_path)
+                shutil.move(file_path, folder_path)
+            '''
 
         break
                 
