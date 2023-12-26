@@ -1,6 +1,5 @@
 # Modules
 import os
-import magic
 import shutil
 
 # Variables
@@ -67,8 +66,6 @@ def display_menu():
     print("[0] Exit")
 
 def organise_folder():
-    mime_format = magic.Magic(mime=True)
-
     for root, directories, files in os.walk(download):
         for directory in directories:
             directory_path = os.path.join(root, directory)
